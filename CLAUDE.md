@@ -6,14 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 uv sync                      # Install dependencies
-uv run python main.py        # Run simulation
-uv run ruff check main.py    # Lint
-uv run ruff format main.py   # Format
+uv run python sim_1d.py      # Run 1D simulation
+uv run ruff check .          # Lint
+uv run ruff format .         # Format
 ```
 
 ## Architecture
 
-Single-file Active Inference simulation (`main.py`) with four components:
+1D Active Inference simulation (`sim_1d.py`) with four components:
 
 1. **`update_physics`**: Generative process - 1D point mass physics (JIT-compiled)
 2. **`compute_vfe`**: Generative model - Variational Free Energy with three error terms (JIT-compiled)

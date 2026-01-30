@@ -30,7 +30,7 @@ uv sync
 ## Usage
 
 ```bash
-uv run python main.py
+uv run python sim_1d.py
 ```
 
 This displays a 3-panel plot:
