@@ -1,17 +1,22 @@
-# Active Inference 1D Simulation
+# Active Inference Simulations
 
-A minimal implementation of Active Inference demonstrating how an agent can achieve goal-directed behavior by minimizing Variational Free Energy (VFE).
+Minimal implementations of Active Inference demonstrating how an agent achieves goal-directed behavior by minimizing Variational Free Energy (VFE).
 
 ## What is Active Inference?
 
 Active Inference is a theoretical framework from neuroscience that unifies perception and action under a single principle: minimizing surprise (or free energy). An agent maintains beliefs about the world and acts to make its observations match its predictions.
 
-## The Simulation
+## Simulations
 
-This simulation models a 1D point mass that must reach a target position (x=10) while adapting to environmental changes:
+| File | Description | Target |
+|------|-------------|--------|
+| `sim_1d.py` | 1D point mass simulation | x = 10 |
+| `sim_2d.py` | 2D point mass with animation | (x, y) = (10, 7) |
 
-- **Agent**: Has an internal belief (μ) about its position and generates control actions (u)
-- **Environment**: A 1D physics world with mass, friction, and stiffness
+Both simulations model a point mass that must reach a target position while adapting to environmental changes:
+
+- **Agent**: Has internal beliefs about position and generates control actions
+- **Environment**: Physics world with mass, friction, and stiffness
 - **Challenge**: At step 500, friction increases 10x to test robustness
 
 The agent learns through two gradient descent updates:
@@ -30,14 +35,12 @@ uv sync
 ## Usage
 
 ```bash
+# 1D simulation (static plot)
 uv run python sim_1d.py
+
+# 2D simulation (static plot + animation saved to MP4)
+uv run python sim_2d.py
 ```
-
-This displays a 3-panel plot:
-
-1. **Position**: Actual position vs internal belief over time
-2. **Action**: Control force applied by the agent
-3. **VFE**: Variational Free Energy (lower = better predictions)
 
 ## Key Concepts in Code
 
