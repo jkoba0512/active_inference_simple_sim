@@ -8,21 +8,25 @@ Active Inference is a theoretical framework from neuroscience that unifies perce
 
 ## Simulations
 
+### Deterministic (point estimate beliefs)
+
 | File        | Description                  | Target           |
 | ----------- | ---------------------------- | ---------------- |
 | `sim_1d.py` | 1D point mass simulation     | x = 10           |
 | `sim_2d.py` | 2D point mass with animation | (x, y) = (10, 7) |
 
-Both simulations model a point mass that must reach a target position while adapting to environmental changes:
+### Probabilistic (Gaussian beliefs with uncertainty)
 
-- **Agent**: Has internal beliefs about position and generates control actions
+| File             | Description                              | Target           |
+| ---------------- | ---------------------------------------- | ---------------- |
+| `sim_1d_prob.py` | 1D with belief uncertainty (σ)           | x = 10           |
+| `sim_2d_prob.py` | 2D with uncertainty ellipses + animation | (x, y) = (10, 7) |
+
+All simulations model a point mass that must reach a target position while adapting to environmental changes:
+
+- **Agent**: Maintains beliefs about position and generates control actions
 - **Environment**: Physics world with mass, friction, and stiffness
 - **Challenge**: At step 500, friction increases 10x to test robustness
-
-The agent learns through two gradient descent updates:
-
-1. **Perception**: Update belief (μ) to match observations
-2. **Action**: Update control (u) to achieve the target
 
 ## Installation
 
@@ -35,37 +39,37 @@ uv sync
 ## Usage
 
 ```bash
-# 1D simulation (static plot)
+# Deterministic simulations
 uv run python sim_1d.py
-
-# 2D simulation (static plot + animation saved to MP4)
 uv run python sim_2d.py
+
+# Probabilistic simulations (with uncertainty tracking)
+uv run python sim_1d_prob.py
+uv run python sim_2d_prob.py
 ```
 
-## Key Concepts in Code
+## Key Concepts
+
+### Deterministic VFE
 
 ```python
-# Variational Free Energy combines three prediction errors:
+# Belief is a point estimate (μ)
 vfe = 0.5 * (
-    p_obs * (observation - belief)²     # Sensory error
-  + p_prior * (target - belief)²        # Prior error
-  + p_action * (action - expected)²     # Action model error
+    p_obs * (observation - μ)²      # Sensory error
+  + p_prior * (target - μ)²         # Prior error
+  + p_action * (action - expected)² # Action model error
 )
-
-# Agent minimizes VFE by updating belief and action via gradients
-belief -= learning_rate * ∂VFE/∂belief
-action -= learning_rate * ∂VFE/∂action
 ```
 
-## Parameters
+### Probabilistic VFE
 
-| Parameter       | Description                   | Default |
-| --------------- | ----------------------------- | ------- |
-| `p_obs`         | Trust in sensory observations | 2.0     |
-| `p_prior`       | Strength of goal preference   | 1.0     |
-| `p_action`      | Action model precision        | 0.1     |
-| `action_gain`   | Expected action scaling       | 0.5     |
-| `learning_rate` | Gradient descent step size    | 0.2     |
+```python
+# Belief is a Gaussian distribution N(μ, σ²)
+vfe = accuracy + complexity
+    = -log p(observation | μ, σ) + KL(q(x) || p(x))
+```
+
+The agent updates both belief mean (μ) and uncertainty (σ) via gradient descent. Uncertainty decreases when observations are consistent with beliefs.
 
 ## References
 
