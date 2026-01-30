@@ -8,9 +8,9 @@ Active Inference is a theoretical framework from neuroscience that unifies perce
 
 ## Simulations
 
-| File | Description | Target |
-|------|-------------|--------|
-| `sim_1d.py` | 1D point mass simulation | x = 10 |
+| File        | Description                  | Target           |
+| ----------- | ---------------------------- | ---------------- |
+| `sim_1d.py` | 1D point mass simulation     | x = 10           |
 | `sim_2d.py` | 2D point mass with animation | (x, y) = (10, 7) |
 
 Both simulations model a point mass that must reach a target position while adapting to environmental changes:
@@ -70,5 +70,3 @@ action -= learning_rate * ∂VFE/∂action
 ## References
 
 - Friston, K. (2010). **The free-energy principle: a unified brain theory?** _Nature Reviews Neuroscience_, 11(2), 127-138. [[Nature]](https://www.nature.com/articles/nrn2787) [[PubMed]](https://pubmed.ncbi.nlm.nih.gov/20068583/)
-
-- Buckley, C. L., Kim, C. S., McGregor, S., & Seth, A. K. (2017). **The free energy principle for action and perception: A mathematical review.** _Journal of Mathematical Psychology_, 81, 55-79. [[arXiv]](https://arxiv.org/abs/1705.09156) [[ScienceDirect]](https://www.sciencedirect.com/science/article/pii/S0022249617300962)
