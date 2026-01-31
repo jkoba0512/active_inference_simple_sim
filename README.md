@@ -71,6 +71,18 @@ vfe = accuracy + complexity
 
 The agent updates both belief mean (μ) and uncertainty (σ) via gradient descent. Uncertainty decreases when observations are consistent with beliefs.
 
+### Notation: p vs q
+
+In variational inference, `p` and `q` denote different distribution families:
+
+| Symbol | Name | Description | In code |
+|--------|------|-------------|---------|
+| `q(x)` | Recognition model | Agent's belief about state | `N(μ, σ²)` |
+| `p(x)` | Prior | Where the agent expects to be | `N(target, σ_prior²)` |
+| `p(o\|x)` | Likelihood | Observation model | `N(x, σ_obs²)` |
+
+The letter `p` is used for all distributions in the **generative model** (how the agent models the world), while `q` is the **approximate posterior** (the agent's current belief). The arguments (e.g., `x`, `o|x`) distinguish which distribution is meant.
+
 ## References
 
 - Friston, K. (2010). **The free-energy principle: a unified brain theory?** _Nature Reviews Neuroscience_, 11(2), 127-138. [[Nature]](https://www.nature.com/articles/nrn2787) [[PubMed]](https://pubmed.ncbi.nlm.nih.gov/20068583/)
