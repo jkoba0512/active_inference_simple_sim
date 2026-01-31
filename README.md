@@ -71,10 +71,10 @@ $$
 
 ### Probabilistic VFE
 
-Belief is a Gaussian distribution $\mathrm{q}(x) = \mathcal{N}(\mu, \sigma^2)$. The VFE decomposes into accuracy and complexity:
+Belief is a Gaussian distribution $q(x) = \mathcal{N}(\mu, \sigma^2)$. The VFE decomposes into accuracy and complexity:
 
 $$
-F = \underbrace{-\log \mathrm{p}(o | \mu, \sigma)}_{\text{accuracy}} + \underbrace{D_{KL}(\mathrm{q}(x) \| \mathrm{p}(x))}_{\text{complexity}}
+F = \underbrace{-\log p(o | \mu, \sigma)}_{\text{accuracy}} + \underbrace{D_{KL}(q(x) \| p(x))}_{\text{complexity}}
 $$
 
 The agent updates both belief mean $\mu$ and uncertainty $\sigma$ via gradient descent.
@@ -85,11 +85,11 @@ In variational inference, $p$ and $q$ denote different distribution families:
 
 | Symbol                      | Name              | Description                   | In code                                     |
 | --------------------------- | ----------------- | ----------------------------- | ------------------------------------------- |
-| $\mathrm{q}(x)$       | Recognition model | Agent's belief about state    | $\mathcal{N}(\mu, \sigma^2)$                |
-| $\mathrm{p}(x)$       | Prior             | Where the agent expects to be | $\mathcal{N}(x_{target}, \sigma_{prior}^2)$ |
-| $\mathrm{p}(o \mid x)$| Likelihood        | Observation model             | $\mathcal{N}(x, \sigma_{obs}^2)$            |
+| $q(x)$       | Recognition model | Agent's belief about state    | $\mathcal{N}(\mu, \sigma^2)$                |
+| $p(x)$       | Prior             | Where the agent expects to be | $\mathcal{N}(x_{target}, \sigma_{prior}^2)$ |
+| $p(o \mid x)$| Likelihood        | Observation model             | $\mathcal{N}(x, \sigma_{obs}^2)$            |
 
-The letter $\mathrm{p}$ is used for all distributions in the **generative model** (how the agent models the world), while $\mathrm{q}$ is the **approximate posterior** (the agent's current belief).
+The letter $p$ is used for all distributions in the **generative model** (how the agent models the world), while $q$ is the **approximate posterior** (the agent's current belief).
 
 ### Accuracy Term
 
@@ -100,13 +100,13 @@ The accuracy term is derived from the negative log-likelihood of a Gaussian dist
 The probability density of observing $o$ given belief $\mu$ with combined variance $\sigma^2 + \sigma_{obs}^2$:
 
 $$
-\mathrm{p}(o | \mu, \sigma) = \frac{1}{\sqrt{2\pi(\sigma^2 + \sigma_{obs}^2)}} \exp\left( -\frac{(o - \mu)^2}{2(\sigma^2 + \sigma_{obs}^2)} \right)
+p(o | \mu, \sigma) = \frac{1}{\sqrt{2\pi(\sigma^2 + \sigma_{obs}^2)}} \exp\left( -\frac{(o - \mu)^2}{2(\sigma^2 + \sigma_{obs}^2)} \right)
 $$
 
 **Step 2: Take negative log**
 
 $$
--\log \mathrm{p}(o | \mu, \sigma) = \frac{1}{2}\log(2\pi) + \frac{1}{2}\log(\sigma^2 + \sigma_{obs}^2) + \frac{(o - \mu)^2}{2(\sigma^2 + \sigma_{obs}^2)}
+-\log p(o | \mu, \sigma) = \frac{1}{2}\log(2\pi) + \frac{1}{2}\log(\sigma^2 + \sigma_{obs}^2) + \frac{(o - \mu)^2}{2(\sigma^2 + \sigma_{obs}^2)}
 $$
 
 **Step 3: Drop constants**
@@ -114,7 +114,7 @@ $$
 Since $\frac{1}{2}\log(2\pi)$ doesn't depend on $\mu$ or $\sigma$, we can ignore it for optimization:
 
 $$
--\log \mathrm{p}(o | \mu, \sigma) \propto \frac{1}{2} \left[ \frac{(o - \mu)^2}{\sigma^2 + \sigma_{obs}^2} + \log(\sigma^2 + \sigma_{obs}^2) \right]
+-\log p(o | \mu, \sigma) \propto \frac{1}{2} \left[ \frac{(o - \mu)^2}{\sigma^2 + \sigma_{obs}^2} + \log(\sigma^2 + \sigma_{obs}^2) \right]
 $$
 
 **Why $\sigma^2 + \sigma_{obs}^2$?**
@@ -124,10 +124,10 @@ $$
 | $\sigma$       | Belief uncertainty | Dynamic (updated) | Agent's confidence about its position estimate |
 | $\sigma_{obs}$ | Observation noise  | Fixed (parameter) | Agent's model of sensor noise                  |
 
-The agent's belief is $\mathrm{q}(x) = \mathcal{N}(\mu, \sigma^2)$ and the observation model is $\mathrm{p}(o|x) = \mathcal{N}(x, \sigma_{obs}^2)$. Marginalizing over the uncertain state:
+The agent's belief is $q(x) = \mathcal{N}(\mu, \sigma^2)$ and the observation model is $p(o|x) = \mathcal{N}(x, \sigma_{obs}^2)$. Marginalizing over the uncertain state:
 
 $$
-\mathrm{p}(o | \mu, \sigma) = \int \mathrm{p}(o|x) \, \mathrm{q}(x) \, dx = \mathcal{N}(\mu, \sigma^2 + \sigma_{obs}^2)
+p(o | \mu, \sigma) = \int p(o|x) \, q(x) \, dx = \mathcal{N}(\mu, \sigma^2 + \sigma_{obs}^2)
 $$
 
 The combined variance arises from integrating out the uncertain position.
@@ -163,44 +163,44 @@ The complexity term is the KL divergence between the agent's belief and the prio
 
 **Derivation of KL divergence for Gaussians**
 
-For $\mathrm{q}(x) = \mathcal{N}(\mu, \sigma^2)$ and $\mathrm{p}(x) = \mathcal{N}(\mu_{target}, \sigma_{prior}^2)$:
+For $q(x) = \mathcal{N}(\mu, \sigma^2)$ and $p(x) = \mathcal{N}(\mu_{target}, \sigma_{prior}^2)$:
 
 **Step 1: Definition of KL divergence**
 
 $$
-D_{KL}(\mathrm{q} \| \mathrm{p}) = \int \mathrm{q}(x) \log \frac{\mathrm{q}(x)}{\mathrm{p}(x)} dx = \mathbb{E}_{\mathrm{q}}[\log \mathrm{q}(x)] - \mathbb{E}_{\mathrm{q}}[\log \mathrm{p}(x)]
+D_{KL}(q \| p) = \int q(x) \log \frac{q(x)}{p(x)} dx = \mathbb{E}_{q}[\log q(x)] - \mathbb{E}_{q}[\log p(x)]
 $$
 
-**Step 2: Compute $\mathbb{E}_{\mathrm{q}}[\log \mathrm{q}(x)]$ (negative entropy)**
+**Step 2: Compute $\mathbb{E}_{q}[\log q(x)]$ (negative entropy)**
 
 $$
-\log \mathrm{q}(x) = -\frac{1}{2}\log(2\pi\sigma^2) - \frac{(x-\mu)^2}{2\sigma^2}
-$$
-
-$$
-\mathbb{E}_{\mathrm{q}}[\log \mathrm{q}(x)] = -\frac{1}{2}\log(2\pi\sigma^2) - \frac{1}{2}
-$$
-
-(since $\mathbb{E}_{\mathrm{q}}[(x-\mu)^2] = \sigma^2$)
-
-**Step 3: Compute $\mathbb{E}_{\mathrm{q}}[\log \mathrm{p}(x)]$ (cross-entropy)**
-
-$$
-\log \mathrm{p}(x) = -\frac{1}{2}\log(2\pi\sigma_{prior}^2) - \frac{(x-\mu_{target})^2}{2\sigma_{prior}^2}
+\log q(x) = -\frac{1}{2}\log(2\pi\sigma^2) - \frac{(x-\mu)^2}{2\sigma^2}
 $$
 
 $$
-\mathbb{E}_{\mathrm{q}}[(x-\mu_{target})^2] = \mathbb{E}_{\mathrm{q}}[(x-\mu+\mu-\mu_{target})^2] = \sigma^2 + (\mu - \mu_{target})^2
+\mathbb{E}_{q}[\log q(x)] = -\frac{1}{2}\log(2\pi\sigma^2) - \frac{1}{2}
+$$
+
+(since $\mathbb{E}_{q}[(x-\mu)^2] = \sigma^2$)
+
+**Step 3: Compute $\mathbb{E}_{q}[\log p(x)]$ (cross-entropy)**
+
+$$
+\log p(x) = -\frac{1}{2}\log(2\pi\sigma_{prior}^2) - \frac{(x-\mu_{target})^2}{2\sigma_{prior}^2}
 $$
 
 $$
-\mathbb{E}_{\mathrm{q}}[\log \mathrm{p}(x)] = -\frac{1}{2}\log(2\pi\sigma_{prior}^2) - \frac{\sigma^2 + (\mu - \mu_{target})^2}{2\sigma_{prior}^2}
+\mathbb{E}_{q}[(x-\mu_{target})^2] = \mathbb{E}_{q}[(x-\mu+\mu-\mu_{target})^2] = \sigma^2 + (\mu - \mu_{target})^2
+$$
+
+$$
+\mathbb{E}_{q}[\log p(x)] = -\frac{1}{2}\log(2\pi\sigma_{prior}^2) - \frac{\sigma^2 + (\mu - \mu_{target})^2}{2\sigma_{prior}^2}
 $$
 
 **Step 4: Subtract**
 
 $$
-D_{KL}(\mathrm{q} \| \mathrm{p}) = \mathbb{E}_{\mathrm{q}}[\log \mathrm{q}(x)] - \mathbb{E}_{\mathrm{q}}[\log \mathrm{p}(x)]
+D_{KL}(q \| p) = \mathbb{E}_{q}[\log q(x)] - \mathbb{E}_{q}[\log p(x)]
 $$
 
 $$
@@ -234,7 +234,7 @@ Combined with the accuracy term, the agent balances:
 While VFE is used for perception (state estimation), Expected Free Energy (EFE) is used for action selection (planning). EFE evaluates future actions by predicting their consequences.
 
 $$
-G(u) = \underbrace{\mathbb{E}_{\mathrm{q}}[(o - o_{preferred})^2]}_{\text{pragmatic value}} + \underbrace{\mathbb{E}_{\mathrm{q}}[\text{uncertainty}]}_{\text{epistemic value}}
+G(u) = \underbrace{\mathbb{E}_{q}[(o - o_{preferred})^2]}_{\text{pragmatic value}} + \underbrace{\mathbb{E}_{q}[\text{uncertainty}]}_{\text{epistemic value}}
 $$
 
 **Two components:**
@@ -264,18 +264,18 @@ The implementation is a simplification of the general EFE formula:
 
 | General | Implementation |
 |---------|----------------|
-| $\mathbb{E}_{\mathrm{q}}[(o - o_{preferred})^2]$ | $\frac{1}{2} \pi_{target} (\mu_{next} - x_{target})^2$ |
+| $\mathbb{E}_{q}[(o - o_{preferred})^2]$ | $\frac{1}{2} \pi_{target} (\mu_{next} - x_{target})^2$ |
 
 - $o_{preferred} = x_{target}$ (goal position)
 - $o \approx \mu_{next}$ (predicted observation = predicted position)
-- Point estimate replaces expectation: $\mathbb{E}_{\mathrm{q}}[\cdot] \to$ evaluate at $\mu$
+- Point estimate replaces expectation: $\mathbb{E}_{q}[\cdot] \to$ evaluate at $\mu$
 - Add precision weight $\pi_{target}$
 
 *Epistemic value:*
 
 | General | Implementation |
 |---------|----------------|
-| $\mathbb{E}_{\mathrm{q}}[\text{uncertainty}]$ | $\frac{1}{2} \pi_{vel} \mu_{v,next}^2$ |
+| $\mathbb{E}_{q}[\text{uncertainty}]$ | $\frac{1}{2} \pi_{vel} \mu_{v,next}^2$ |
 
 True epistemic value measures **expected information gain** (how much will I learn?). The implementation replaces this with a **velocity settling term** — a prior preference that velocity should be zero at the goal.
 
