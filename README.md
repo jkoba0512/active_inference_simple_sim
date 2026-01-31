@@ -28,7 +28,7 @@ Active Inference is a theoretical framework from neuroscience that unifies perce
 | ---------------- | ---------------------------------------------- | ------ |
 | `sim_1d_efe.py`  | 1D with VFE for perception + EFE for action   | x = 10 |
 
-The EFE simulation separates perception (state estimation via VFE) from action selection (planning via EFE). The agent maintains an internal model of the environment that may differ from reality.
+In the other simulations, VFE is used for both perception and action. The EFE simulation uses two different objectives: VFE updates beliefs to match observations, while EFE selects actions by predicting future outcomes. The agent predicts outcomes using an internal physics model with assumed friction `b_model=0.5`, which becomes incorrect when true friction changes to `b_true=5.0` at step 500.
 
 All simulations model a point mass that must reach a target position while adapting to environmental changes:
 
