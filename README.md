@@ -256,7 +256,36 @@ $$
 G(u) = \frac{1}{2} \pi_{target} (\mu_{next} - x_{target})^2 + \frac{1}{2} \pi_{vel} \mu_{v,next}^2
 $$
 
-The first term drives the agent toward the target; the second term encourages the velocity to settle (reach equilibrium).
+**Deriving the implementation from the general definition:**
+
+The implementation is a simplification of the general EFE formula:
+
+*Pragmatic value:*
+
+| General | Implementation |
+|---------|----------------|
+| $\mathbb{E}_q[(o - o_{preferred})^2]$ | $\frac{1}{2} \pi_{target} (\mu_{next} - x_{target})^2$ |
+
+- $o_{preferred} = x_{target}$ (goal position)
+- $o \approx \mu_{next}$ (predicted observation = predicted position)
+- Point estimate replaces expectation: $\mathbb{E}_q[\cdot] \to$ evaluate at $\mu$
+- Add precision weight $\pi_{target}$
+
+*Epistemic value:*
+
+| General | Implementation |
+|---------|----------------|
+| $\mathbb{E}_q[\text{uncertainty}]$ | $\frac{1}{2} \pi_{vel} \mu_{v,next}^2$ |
+
+True epistemic value measures **expected information gain** (how much will I learn?). The implementation replaces this with a **velocity settling term** — a prior preference that velocity should be zero at the goal.
+
+*Simplifications:*
+
+1. **Point estimates**: No expectation over distributions, just evaluate at belief mean
+2. **No information gain**: Epistemic term replaced by velocity regularization
+3. **Deterministic predictions**: `predict_next_state` returns a single state, not a distribution
+
+The implementation captures the core idea (select actions leading to preferred outcomes) but omits the full probabilistic treatment.
 
 **Model mismatch demonstration:**
 
