@@ -264,18 +264,18 @@ The implementation is a simplification of the general EFE formula:
 
 | General | Implementation |
 |---------|----------------|
-| $\mathbb{E}_{q}[(o - o_{preferred})^2]$ | $\frac{1}{2} \pi_{target} (\mu_{next} - x_{target})^2$ |
+| $\mathbb{E}\_{q}[(o - o\_{preferred})^2]$ | $\frac{1}{2} \pi\_{target} (\mu\_{next} - x\_{target})^2$ |
 
-- $o_{preferred} = x_{target}$ (goal position)
-- $o \approx \mu_{next}$ (predicted observation = predicted position)
-- Point estimate replaces expectation: $\mathbb{E}_{q}[\cdot] \to$ evaluate at $\mu$
-- Add precision weight $\pi_{target}$
+- $o\_{preferred} = x\_{target}$ (goal position)
+- $o \approx \mu\_{next}$ (predicted observation = predicted position)
+- Point estimate replaces expectation: $\mathbb{E}\_{q}[\cdot] \to$ evaluate at $\mu$
+- Add precision weight $\pi\_{target}$
 
 *Epistemic value:*
 
 | General | Implementation |
 |---------|----------------|
-| $\mathbb{E}_{q}[\text{uncertainty}]$ | $\frac{1}{2} \pi_{vel} \mu_{v,next}^2$ |
+| $\mathbb{E}\_{q}[\text{uncertainty}]$ | $\frac{1}{2} \pi\_{vel} \mu\_{v,next}^2$ |
 
 True epistemic value measures **expected information gain** (how much will I learn?). The implementation replaces this with a **velocity settling term** — a prior preference that velocity should be zero at the goal.
 
