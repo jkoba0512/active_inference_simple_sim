@@ -22,6 +22,14 @@ Active Inference is a theoretical framework from neuroscience that unifies perce
 | `sim_1d_prob.py` | 1D with belief uncertainty (σ)           | x = 10           |
 | `sim_2d_prob.py` | 2D with uncertainty ellipses + animation | (x, y) = (10, 7) |
 
+### Expected Free Energy (EFE)
+
+| File             | Description                                    | Target |
+| ---------------- | ---------------------------------------------- | ------ |
+| `sim_1d_efe.py`  | 1D with VFE for perception + EFE for action   | x = 10 |
+
+The EFE simulation separates perception (state estimation via VFE) from action selection (planning via EFE). The agent maintains an internal model of the environment that may differ from reality.
+
 All simulations model a point mass that must reach a target position while adapting to environmental changes:
 
 - **Agent**: Maintains beliefs about position and generates control actions
@@ -46,6 +54,9 @@ uv run python sim_2d.py
 # Probabilistic simulations (with uncertainty tracking)
 uv run python sim_1d_prob.py
 uv run python sim_2d_prob.py
+
+# Expected Free Energy simulation
+uv run python sim_1d_efe.py
 ```
 
 ## Key Concepts
@@ -217,6 +228,44 @@ The complexity term pulls the agent's belief toward the goal state:
 Combined with the accuracy term, the agent balances:
 - **Accuracy**: Match observations (sensory evidence)
 - **Complexity**: Stay close to goals (prior preferences)
+
+### Expected Free Energy (EFE)
+
+While VFE is used for perception (state estimation), Expected Free Energy (EFE) is used for action selection (planning). EFE evaluates future actions by predicting their consequences.
+
+$$
+G(u) = \underbrace{\mathbb{E}_{q}[(o - o_{preferred})^2]}_{\text{pragmatic value}} + \underbrace{\mathbb{E}_{q}[\text{uncertainty}]}_{\text{epistemic value}}
+$$
+
+**Two components:**
+
+| Term             | Meaning                                                |
+| ---------------- | ------------------------------------------------------ |
+| Pragmatic value  | Expected distance from preferred outcomes (goal-seeking) |
+| Epistemic value  | Expected uncertainty reduction (information-seeking)    |
+
+**Implementation in `sim_1d_efe.py`:**
+
+The agent maintains:
+- **Beliefs**: Position ($\mu$) and velocity ($\mu_v$) estimates
+- **Internal model**: Predicts next state given action (with assumed friction $b_{model}$)
+- **VFE**: Updates beliefs to match observations
+- **EFE**: Selects actions that minimize expected distance from target
+
+$$
+G(u) = \frac{1}{2} \pi_{target} (\mu_{next} - x_{target})^2 + \frac{1}{2} \pi_{vel} \mu_{v,next}^2
+$$
+
+The first term drives the agent toward the target; the second term encourages the velocity to settle (reach equilibrium).
+
+**Model mismatch demonstration:**
+
+The simulation demonstrates what happens when the agent's internal model differs from reality:
+- Agent assumes friction $b_{model} = 0.5$
+- After step 500, true friction increases to $b_{true} = 5.0$
+- The agent cannot fully compensate because it underestimates the required force
+
+This illustrates a key aspect of Active Inference: agents act based on their generative model of the world, and model errors lead to suboptimal behavior.
 
 ## References
 
